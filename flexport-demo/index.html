@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Viewer</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        iframe {
+            width: 100%;
+            height: 20vh; /* 20% of the viewport height */
+            border: 1px solid #ddd;
+            margin-top: 20px;
+        }
+        .form-container {
+            margin-top: 20px;
+        }
+        .form-container input, .form-container select {
+            margin-bottom: 10px;
+            padding: 8px;
+            width: 100%;
+            max-width: 300px;
+            display: block;
+        }
+        .add-address-btn {
+            padding: 8px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        .add-address-btn:hover {
+            background-color: #45a049;
+        }
+        .data-table {
+            margin-top: 20px;
+            width: 100%;
+        }
+        .data-table input {
+            width: 100%;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>CSV Data</h1>
+    <input type="file" id="csvFileInput" accept=".csv" />
+    <iframe id="csvIframe"></iframe>
+
+    <!-- Form container below iframe -->
+    <div class="form-container">
+        <label for="invoiceNo">Invoice No</label>
+        <input type="text" id="invoiceNo" placeholder="Enter Invoice No" />
+
+        <label for="date">Date</label>
+        <input type="date" id="date" />
+
+        <label for="currency">Currency</label>
+        <select id="currency">
+            <option value=""></option>
+            <option value="PHP">PHP</option>
+            <option value="USD">USD</option>
+            <option value="YEN">YEN</option>
+        </select>
+
+        <!-- Add Address button (link) -->
+        <a href="#" class="add-address-btn" id="addAddressBtn">Add Address</a>
+    </div>
+
+    <!-- Product Table -->
+    <div class="data-table">
+        <table id="productTable">
+            <thead>
+                <tr>
+                    <th>Product Description</th>
+                    <th>Units</th>
+                    <th>Price/Unit</th>
+                    <th>Total Price</th>
+                    <th>Country of Origin</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data rows for two products -->
+                <tr>
+                    <td><input type="text" placeholder="Product 1 Description" /></td>
+                    <td><input type="number" placeholder="Units" /></td>
+                    <td><input type="number" placeholder="Price/Unit" /></td>
+                    <td><input type="number" placeholder="Total Price" /></td>
+                    <td><input type="text" placeholder="Country of Origin" /></td>
+                </tr>
+                <tr>
+                    <td><input type="text" placeholder="Product 2 Description" /></td>
+                    <td><input type="number" placeholder="Units" /></td>
+                    <td><input type="number" placeholder="Price/Unit" /></td>
+                    <td><input type="number" placeholder="Total Price" /></td>
+                    <td><input type="text" placeholder="Country of Origin" /></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.getElementById('csvFileInput').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const csvData = e.target.result;
+                    const rows = parseCSV(csvData);
+
+                    const iframe = document.getElementById('csvIframe');
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+                    // Clear previous content inside the iframe
+                    iframeDoc.open();
+                    iframeDoc.write('<html><head><style>' + document.querySelector('style').innerHTML + '</style></head><body><table><thead><tr>');
+
+                    // Add headers to the table inside the iframe
+                    const headers = rows[0];
+                    headers.forEach(header => {
+                        iframeDoc.write(`<th>${header}</th>`);
+                    });
+
+                    iframeDoc.write('</tr></thead><tbody>');
+
+                    // Add rows to the table inside the iframe
+                    rows.slice(1).forEach(row => {
+                        iframeDoc.write('<tr>');
+                        row.forEach(data => {
+                            iframeDoc.write(`<td>${data !== undefined ? data : ''}</td>`);
+                        });
+                        iframeDoc.write('</tr>');
+                    });
+
+                    iframeDoc.write('</tbody></table></body></html>');
+                    iframeDoc.close();
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // CSV parsing function to handle quoted commas and empty fields
+        function parseCSV(csvData) {
+            const rows = [];
+            const regex = /("([^"]|"")*"|[^",\n]+)(?=\s*,|\s*\n|\s*$)/g;  // This regex handles quoted strings and commas
+            let match;
+
+            // Split by lines and process each line individually
+            csvData.split('\n').forEach((line, index) => {
+                const row = [];
+                let matchCount = 0;
+
+                // Process each line for comma-separated values
+                while ((match = regex.exec(line)) !== null) {
+                    let value = match[0];
+                    if (value.startsWith('"') && value.endsWith('"')) {
+                        value = value.substring(1, value.length - 1).replace(/""/g, '"');
+                    }
+
+                    row.push(value); // Add the value to the row array
+                    matchCount++;
+                }
+
+                // If it's the first row, store the number of columns (header row)
+                if (index === 0) {
+                    rows.push(row);
+                } else {
+                    // For subsequent rows, align them with the header
+                    if (row.length < rows[0].length) {
+                        // Insert empty cells where necessary
+                        const missingColumns = rows[0].length - row.length;
+
+                        // Specific case for the row starting with "15012"
+                        if (row[0] === '' && row[1] === '') {
+                            // This row is missing DESCRIPTION OF GOODS and STYLE
+                            row.unshift('', '');  // Insert two empty columns before the value "15012"
+                        }
+
+                        // Fill remaining missing columns with empty strings
+                        while (row.length < rows[0].length) {
+                            row.push(''); // Add empty fields for missing columns
+                        }
+                    }
+                    rows.push(row);
+                }
+            });
+
+            return rows;
+        }
+    </script>
+</body>
+</html>
