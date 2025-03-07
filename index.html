@@ -52,6 +52,41 @@
             width: 100%;
             padding: 8px;
         }
+        .digitize-link {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 10px;
+            background-color: #2196F3;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .digitize-link:hover {
+            background-color: #1976D2;
+        }
+        .digitized-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #FF9800;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: not-allowed;
+        }
+        .digitized-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #FF9800;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer; /* Change to pointer to make it interactive */
+}
+
+.digitized-btn:hover {
+    background-color: #FB8C00; /* Change the color on hover for better feedback */
+}
+
     </style>
 </head>
 <body>
@@ -110,6 +145,12 @@
             </tbody>
         </table>
     </div>
+
+    <!-- Digitize Link -->
+    <a href="semi-index.html" class="digitize-link">Digitize (Go To next page)</a>
+
+    <!-- Digitized Button -->
+    <button class="digitized-btn">Digitized</button>
 
     <script>
         document.getElementById('csvFileInput').addEventListener('change', function (event) {
