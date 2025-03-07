@@ -94,16 +94,16 @@
                     <th>Country of Origin</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="productTableBody">
                 <!-- Data rows for two products -->
-                <tr>
+                <tr id="row-1">
                     <td><input type="text" placeholder="Product 1 Description" /></td>
                     <td><input type="number" placeholder="Units" /></td>
                     <td><input type="number" placeholder="Price/Unit" /></td>
                     <td><input type="number" placeholder="Total Price" /></td>
                     <td><input type="text" placeholder="Country of Origin" /></td>
                 </tr>
-                <tr>
+                <tr id="row-2">
                     <td><input type="text" placeholder="Product 2 Description" /></td>
                     <td><input type="number" placeholder="Units" /></td>
                     <td><input type="number" placeholder="Price/Unit" /></td>
@@ -139,8 +139,9 @@
                     iframeDoc.write('</tr></thead><tbody>');
 
                     // Add rows to the table inside the iframe
-                    rows.slice(1).forEach(row => {
-                        iframeDoc.write('<tr>');
+                    rows.slice(1).forEach((row, index) => {
+                        const rowId = `row-${index + 1}`;
+                        iframeDoc.write('<tr id="' + rowId + '">');
                         row.forEach(data => {
                             iframeDoc.write(`<td>${data !== undefined ? data : ''}</td>`);
                         });
