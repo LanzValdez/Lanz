@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSV Viewer</title>
+    <title>File Viewer</title>
     <style>
         table {
             width: 100%;
@@ -16,9 +16,9 @@
             padding: 8px;
             text-align: left;
         }
-        iframe {
+        embed, img {
             width: 100%;
-            height: 20vh; /* 20% of the viewport height */
+            height: auto;
             border: 1px solid #ddd;
             margin-top: 20px;
         }
@@ -55,11 +55,12 @@
     </style>
 </head>
 <body>
-    <h1>CSV Data</h1>
-    <input type="file" id="csvFileInput" accept=".csv" />
-    <iframe id="csvIframe"></iframe>
+    <h1>File Viewer</h1>
+    <input type="file" id="fileInput" accept=".csv, .pdf, .jpg, .jpeg, .png" />
+    
+    <div id="fileViewer"></div>
 
-    <!-- Form container below iframe -->
+    <!-- Form container below file viewer -->
     <div class="form-container">
         <label for="invoiceNo">Invoice No</label>
         <input type="text" id="invoiceNo" placeholder="Enter Invoice No" />
@@ -82,76 +83,70 @@
         <a href="#" class="digitized-btn" id="digitizedBtn">Digitized</a>
     </div>
 
-    <!-- Product Table -->
-    <div class="data-table">
-        <table id="productTable">
-            <thead>
-                <tr>
-                    <th>Product Description</th>
-                    <th>Units</th>
-                    <th>Price/Unit</th>
-                    <th>Total Price</th>
-                    <th>Country of Origin</th>
-                </tr>
-            </thead>
-            <tbody id="productTableBody">
-                <!-- Data rows for two products -->
-                <tr id="row-1">
-                    <td><input type="text" placeholder="Product 1 Description" /></td>
-                    <td><input type="number" placeholder="Units" /></td>
-                    <td><input type="number" placeholder="Price/Unit" /></td>
-                    <td><input type="number" placeholder="Total Price" /></td>
-                    <td><input type="text" placeholder="Country of Origin" /></td>
-                </tr>
-                <tr id="row-2">
-                    <td><input type="text" placeholder="Product 2 Description" /></td>
-                    <td><input type="number" placeholder="Units" /></td>
-                    <td><input type="number" placeholder="Price/Unit" /></td>
-                    <td><input type="number" placeholder="Total Price" /></td>
-                    <td><input type="text" placeholder="Country of Origin" /></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
     <script>
-        document.getElementById('csvFileInput').addEventListener('change', function (event) {
+        document.getElementById('fileInput').addEventListener('change', function (event) {
             const file = event.target.files[0];
+            const fileViewer = document.getElementById('fileViewer');
+
             if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const csvData = e.target.result;
-                    const rows = parseCSV(csvData);
+                const fileType = file.type;
 
-                    const iframe = document.getElementById('csvIframe');
-                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                // Clear the file viewer content before displaying the new file
+                fileViewer.innerHTML = '';
 
-                    // Clear previous content inside the iframe
-                    iframeDoc.open();
-                    iframeDoc.write('<html><head><style>' + document.querySelector('style').innerHTML + '</style></head><body><table><thead><tr>');
+                // Handle different file types
+                if (fileType === "text/csv") {
+                    // Handle CSV File
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const csvData = e.target.result;
+                        const rows = parseCSV(csvData);
 
-                    // Add headers to the table inside the iframe
-                    const headers = rows[0];
-                    headers.forEach(header => {
-                        iframeDoc.write(`<th>${header}</th>`);
-                    });
-
-                    iframeDoc.write('</tr></thead><tbody>');
-
-                    // Add rows to the table inside the iframe
-                    rows.slice(1).forEach((row, index) => {
-                        const rowId = `row-${index + 1}`;
-                        iframeDoc.write('<tr id="' + rowId + '">');
-                        row.forEach(data => {
-                            iframeDoc.write(`<td>${data !== undefined ? data : ''}</td>`);
+                        let tableContent = '<table><thead><tr>';
+                        const headers = rows[0];
+                        headers.forEach(header => {
+                            tableContent += `<th>${header}</th>`;
                         });
-                        iframeDoc.write('</tr>');
-                    });
 
-                    iframeDoc.write('</tbody></table></body></html>');
-                    iframeDoc.close();
-                };
-                reader.readAsText(file);
+                        tableContent += '</tr></thead><tbody>';
+                        rows.slice(1).forEach(row => {
+                            tableContent += '<tr>';
+                            row.forEach(data => {
+                                tableContent += `<td>${data !== undefined ? data : ''}</td>`;
+                            });
+                            tableContent += '</tr>';
+                        });
+
+                        tableContent += '</tbody></table>';
+                        fileViewer.innerHTML = tableContent;
+                    };
+                    reader.readAsText(file);
+
+                } else if (fileType.startsWith("image/")) {
+                    // Handle Image Files
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const img = document.createElement("img");
+                        img.src = e.target.result;
+                        fileViewer.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+
+                } else if (fileType === "application/pdf") {
+                    // Handle PDF Files
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const embed = document.createElement("embed");
+                        embed.src = e.target.result;
+                        embed.type = "application/pdf";
+                        embed.width = "100%";
+                        embed.height = "600px";
+                        fileViewer.appendChild(embed);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    fileViewer.innerHTML = "Unsupported file type.";
+                }
             }
         });
 
@@ -185,14 +180,6 @@
                     if (row.length < rows[0].length) {
                         // Insert empty cells where necessary
                         const missingColumns = rows[0].length - row.length;
-
-                        // Specific case for the row starting with "15012"
-                        if (row[0] === '' && row[1] === '') {
-                            // This row is missing DESCRIPTION OF GOODS and STYLE
-                            row.unshift('', '');  // Insert two empty columns before the value "15012"
-                        }
-
-                        // Fill remaining missing columns with empty strings
                         while (row.length < rows[0].length) {
                             row.push(''); // Add empty fields for missing columns
                         }
