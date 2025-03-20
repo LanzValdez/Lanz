@@ -56,7 +56,7 @@
 </head>
 <body>
     <h1>File Viewer</h1>
-    <input type="file" id="fileInput" accept=".csv, .pdf, .jpg, .jpeg, .png" />
+    <input type="file" id="fileInput" accept=".csv, .pdf, .jpg, .jpeg, .png" multiple />
     
     <div id="fileViewer"></div>
 
@@ -85,14 +85,15 @@
 
     <script>
         document.getElementById('fileInput').addEventListener('change', function (event) {
-            const file = event.target.files[0];
+            const files = event.target.files;
             const fileViewer = document.getElementById('fileViewer');
 
-            if (file) {
-                const fileType = file.type;
+            // Clear the file viewer content before displaying the new files
+            fileViewer.innerHTML = '';
 
-                // Clear the file viewer content before displaying the new file
-                fileViewer.innerHTML = '';
+            // Loop through each selected file
+            Array.from(files).forEach(file => {
+                const fileType = file.type;
 
                 // Handle different file types
                 if (fileType === "text/csv") {
@@ -118,7 +119,7 @@
                         });
 
                         tableContent += '</tbody></table>';
-                        fileViewer.innerHTML = tableContent;
+                        fileViewer.innerHTML += tableContent; // Append each file's content
                     };
                     reader.readAsText(file);
 
@@ -128,7 +129,7 @@
                     reader.onload = function (e) {
                         const img = document.createElement("img");
                         img.src = e.target.result;
-                        fileViewer.appendChild(img);
+                        fileViewer.appendChild(img); // Append each image
                     };
                     reader.readAsDataURL(file);
 
@@ -141,13 +142,13 @@
                         embed.type = "application/pdf";
                         embed.width = "100%";
                         embed.height = "600px";
-                        fileViewer.appendChild(embed);
+                        fileViewer.appendChild(embed); // Append each PDF
                     };
                     reader.readAsDataURL(file);
                 } else {
-                    fileViewer.innerHTML = "Unsupported file type.";
+                    fileViewer.innerHTML += "<p>Unsupported file type.</p>";
                 }
-            }
+            });
         });
 
         // CSV parsing function to handle quoted commas and empty fields
