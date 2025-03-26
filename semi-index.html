@@ -83,6 +83,47 @@
         <a href="#" class="digitized-btn" id="digitizedBtn">Digitized</a>
     </div>
 
+    <!-- New Table below form -->
+    <h2>Product Details</h2>
+    <table id="productDetailsTable">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>QTY</th>
+                <th>Price Per Unit</th>
+                <th>Total Price</th>
+                <th>Country of Origin</th>
+                <th>Gross Weight</th>
+                <th>Net Weight</th>
+                <th>Volume</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Row 1 -->
+            <tr>
+                <td><input type="text" id="productName1"></td>
+                <td><input type="number" id="qty1"></td>
+                <td><input type="number" id="pricePerUnit1"></td>
+                <td><input type="number" id="totalPrice1"></td>
+                <td><input type="text" id="countryOfOrigin1"></td>
+                <td><input type="number" id="grossWeight1"></td>
+                <td><input type="number" id="netWeight1"></td>
+                <td><input type="number" id="volume1"></td>
+            </tr>
+            <!-- Row 2 -->
+            <tr>
+                <td><input type="text" id="productName2"></td>
+                <td><input type="number" id="qty2"></td>
+                <td><input type="number" id="pricePerUnit2"></td>
+                <td><input type="number" id="totalPrice2"></td>
+                <td><input type="text" id="countryOfOrigin2"></td>
+                <td><input type="number" id="grossWeight2"></td>
+                <td><input type="number" id="netWeight2"></td>
+                <td><input type="number" id="volume2"></td>
+            </tr>
+        </tbody>
+    </table>
+
     <script>
         document.getElementById('fileInput').addEventListener('change', function (event) {
             const files = event.target.files;
