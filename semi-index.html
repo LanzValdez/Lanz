@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Viewer</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
         table {
             width: 100%;
@@ -66,7 +67,7 @@
         <input type="text" id="invoiceNo" placeholder="Enter Invoice No" />
 
         <label for="date">Date</label>
-        <input type="date" id="date" />
+        <input type="text" id="date" placeholder="Select Date" />
 
         <label for="currency">Currency</label>
         <select id="currency">
@@ -124,7 +125,13 @@
         </tbody>
     </table>
 
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
+        // Initialize flatpickr on the date input field
+        flatpickr("#date", {
+            dateFormat: "M/d/Y",  // This sets the format to MMM/dd/yyyy (e.g., Dec 3, 2024)
+        });
+
         document.getElementById('fileInput').addEventListener('change', function (event) {
             const files = event.target.files;
             const fileViewer = document.getElementById('fileViewer');
