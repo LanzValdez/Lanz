@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Viewer</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
         table {
             width: 100%;
@@ -54,10 +53,12 @@
             padding: 8px;
         }
     </style>
+    <!-- Include SheetJS library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 </head>
 <body>
     <h1>File Viewer</h1>
-    <input type="file" id="fileInput" accept=".csv, .pdf, .jpg, .jpeg, .png" multiple />
+    <input type="file" id="fileInput" accept=".csv, .pdf, .jpg, .jpeg, .png, .xlsx, .xls" multiple />
     
     <div id="fileViewer"></div>
 
@@ -67,7 +68,7 @@
         <input type="text" id="invoiceNo" placeholder="Enter Invoice No" />
 
         <label for="date">Date</label>
-        <input type="text" id="date" placeholder="Select Date" />
+        <input type="date" id="date" />
 
         <label for="currency">Currency</label>
         <select id="currency">
@@ -84,54 +85,7 @@
         <a href="#" class="digitized-btn" id="digitizedBtn">Digitized</a>
     </div>
 
-    <!-- New Table below form -->
-    <h2>Product Details</h2>
-    <table id="productDetailsTable">
-        <thead>
-            <tr>
-                <th>Product Name</th>
-                <th>QTY</th>
-                <th>Price Per Unit</th>
-                <th>Total Price</th>
-                <th>Country of Origin</th>
-                <th>Gross Weight</th>
-                <th>Net Weight</th>
-                <th>Volume</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Row 1 -->
-            <tr>
-                <td><input type="text" id="productName1"></td>
-                <td><input type="number" id="qty1"></td>
-                <td><input type="number" id="pricePerUnit1"></td>
-                <td><input type="number" id="totalPrice1"></td>
-                <td><input type="text" id="countryOfOrigin1"></td>
-                <td><input type="number" id="grossWeight1"></td>
-                <td><input type="number" id="netWeight1"></td>
-                <td><input type="number" id="volume1"></td>
-            </tr>
-            <!-- Row 2 -->
-            <tr>
-                <td><input type="text" id="productName2"></td>
-                <td><input type="number" id="qty2"></td>
-                <td><input type="number" id="pricePerUnit2"></td>
-                <td><input type="number" id="totalPrice2"></td>
-                <td><input type="text" id="countryOfOrigin2"></td>
-                <td><input type="number" id="grossWeight2"></td>
-                <td><input type="number" id="netWeight2"></td>
-                <td><input type="number" id="volume2"></td>
-            </tr>
-        </tbody>
-    </table>
-
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-        // Initialize flatpickr on the date input field
-        flatpickr("#date", {
-            dateFormat: "M/d/Y",  // This sets the format to MMM/dd/yyyy (e.g., Dec 3, 2024)
-        });
-
         document.getElementById('fileInput').addEventListener('change', function (event) {
             const files = event.target.files;
             const fileViewer = document.getElementById('fileViewer');
@@ -143,9 +97,30 @@
             Array.from(files).forEach(file => {
                 const fileType = file.type;
 
-                // Handle different file types
-                if (fileType === "text/csv") {
-                    // Handle CSV File
+                if (fileType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || file.name.endsWith(".xlsx") || fileType === "application/vnd.ms-excel" || file.name.endsWith(".xls")) {
+                    // Handle XLSX and XLS Files
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const data = e.target.result;
+
+                        // Parse the Excel file using SheetJS
+                        const workbook = XLSX.read(data, { type: 'binary' });
+
+                        // Loop through each sheet in the workbook
+                        workbook.SheetNames.forEach(sheetName => {
+                            const sheet = workbook.Sheets[sheetName];
+
+                            // Convert sheet to HTML table
+                            const htmlTable = XLSX.utils.sheet_to_html(sheet);
+
+                            // Append the table to the file viewer
+                            fileViewer.innerHTML += `<h3>${sheetName}</h3>`;
+                            fileViewer.innerHTML += htmlTable;
+                        });
+                    };
+                    reader.readAsBinaryString(file);
+                } else if (fileType === "text/csv") {
+                    // Handle CSV File (Your CSV logic here)
                     const reader = new FileReader();
                     reader.onload = function (e) {
                         const csvData = e.target.result;
@@ -170,7 +145,6 @@
                         fileViewer.innerHTML += tableContent; // Append each file's content
                     };
                     reader.readAsText(file);
-
                 } else if (fileType.startsWith("image/")) {
                     // Handle Image Files
                     const reader = new FileReader();
@@ -182,15 +156,15 @@
                     reader.readAsDataURL(file);
 
                 } else if (fileType === "application/pdf") {
-                    // Handle PDF Files
+                    // Handle PDF Files using <iframe>
                     const reader = new FileReader();
                     reader.onload = function (e) {
-                        const embed = document.createElement("embed");
-                        embed.src = e.target.result;
-                        embed.type = "application/pdf";
-                        embed.width = "100%";
-                        embed.height = "600px";
-                        fileViewer.appendChild(embed); // Append each PDF
+                        const iframe = document.createElement("iframe");
+                        iframe.src = e.target.result;
+                        iframe.width = "100%";
+                        iframe.height = "600px";
+                        iframe.style.border = "none"; // Optional: Remove iframe border
+                        fileViewer.appendChild(iframe); // Append the iframe
                     };
                     reader.readAsDataURL(file);
                 } else {
