@@ -83,7 +83,87 @@
         <a href="#" class="digitized-btn" id="digitizedBtn">Digitized</a>
     </div>
 
+    <!-- Table for input fields -->
+    <h2>Product Details</h2>
+    <table id="productTable">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>PO Number</th>
+                <th>QTY</th>
+                <th>Price per unit</th>
+                <th>Total Price</th>
+                <th>Country of Origin</th>
+                <th>Gross Weight</th>
+                <th>Net Weight</th>
+                <th>Volume</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="row1">
+                <td><input type="text" id="row1-productName" oninput="checkAndAddRow('row1')"></td>
+                <td><input type="text" id="row1-poNumber" oninput="checkAndAddRow('row1')"></td>
+                <td><input type="number" id="row1-qty" oninput="checkAndAddRow('row1')"></td>
+                <td><input type="number" id="row1-price" oninput="checkAndAddRow('row1')"></td>
+                <td><input type="text" id="row1-totalPrice" oninput="checkAndAddRow('row1')"></td>
+                <td><input type="text" id="row1-countryOfOrigin" oninput="checkAndAddRow('row1')"></td>
+                <td><input type="number" id="row1-grossWeight" oninput="checkAndAddRow('row1')"></td>
+                <td><input type="number" id="row1-netWeight" oninput="checkAndAddRow('row1')"></td>
+                <td><input type="number" id="row1-volume" oninput="checkAndAddRow('row1')"></td>
+            </tr>
+        </tbody>
+    </table>
+
     <script>
+        let rowCount = 1; // To track the row ID
+        
+        // Function to check and add new row when all fields in current row are filled
+        function checkAndAddRow(currentRowId) {
+            const nameInput = document.getElementById(currentRowId + '-productName');
+            const poNumberInput = document.getElementById(currentRowId + '-poNumber');
+            const qtyInput = document.getElementById(currentRowId + '-qty');
+            const priceInput = document.getElementById(currentRowId + '-price');
+            const totalPriceInput = document.getElementById(currentRowId + '-totalPrice');
+            const countryInput = document.getElementById(currentRowId + '-countryOfOrigin');
+            const grossWeightInput = document.getElementById(currentRowId + '-grossWeight');
+            const netWeightInput = document.getElementById(currentRowId + '-netWeight');
+            const volumeInput = document.getElementById(currentRowId + '-volume');
+
+            // Check if all fields are filled
+            if (nameInput.value && poNumberInput.value && qtyInput.value && priceInput.value && totalPriceInput.value && countryInput.value && grossWeightInput.value && netWeightInput.value && volumeInput.value) {
+                addRow();
+            }
+        }
+
+        // Function to add a new row
+        function addRow() {
+            rowCount++; // Increment row count for unique ID
+            
+            // Create a new row
+            const table = document.getElementById('productTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+
+            // Generate unique row ID
+            const rowId = 'row' + rowCount;
+            
+            // Insert cells and inputs for the new row
+            newRow.innerHTML = `
+                <td><input type="text" id="${rowId}-productName" oninput="checkAndAddRow('${rowId}')"></td>
+                <td><input type="text" id="${rowId}-poNumber" oninput="checkAndAddRow('${rowId}')"></td>
+                <td><input type="number" id="${rowId}-qty" oninput="checkAndAddRow('${rowId}')"></td>
+                <td><input type="number" id="${rowId}-price" oninput="checkAndAddRow('${rowId}')"></td>
+                <td><input type="text" id="${rowId}-totalPrice" oninput="checkAndAddRow('${rowId}')"></td>
+                <td><input type="text" id="${rowId}-countryOfOrigin" oninput="checkAndAddRow('${rowId}')"></td>
+                <td><input type="number" id="${rowId}-grossWeight" oninput="checkAndAddRow('${rowId}')"></td>
+                <td><input type="number" id="${rowId}-netWeight" oninput="checkAndAddRow('${rowId}')"></td>
+                <td><input type="number" id="${rowId}-volume" oninput="checkAndAddRow('${rowId}')"></td>
+            `;
+
+            // Automatically check and add new row if fields are filled
+            checkAndAddRow(rowId);
+        }
+
+        // File input handling for PDFs, Images, and other files
         document.getElementById('fileInput').addEventListener('change', function (event) {
             const files = event.target.files;
             const fileViewer = document.getElementById('fileViewer');
@@ -97,7 +177,6 @@
 
                 // Handle different file types
                 if (fileType === "text/csv") {
-                    // Handle CSV File
                     const reader = new FileReader();
                     reader.onload = function (e) {
                         const csvData = e.target.result;
@@ -124,7 +203,6 @@
                     reader.readAsText(file);
 
                 } else if (fileType.startsWith("image/")) {
-                    // Handle Image Files
                     const reader = new FileReader();
                     reader.onload = function (e) {
                         const img = document.createElement("img");
@@ -134,7 +212,6 @@
                     reader.readAsDataURL(file);
 
                 } else if (fileType === "application/pdf") {
-                    // Handle PDF Files
                     const reader = new FileReader();
                     reader.onload = function (e) {
                         const embed = document.createElement("embed");
@@ -179,7 +256,6 @@
                 } else {
                     // For subsequent rows, align them with the header
                     if (row.length < rows[0].length) {
-                        // Insert empty cells where necessary
                         const missingColumns = rows[0].length - row.length;
                         while (row.length < rows[0].length) {
                             row.push(''); // Add empty fields for missing columns
@@ -192,5 +268,6 @@
             return rows;
         }
     </script>
+
 </body>
 </html>
