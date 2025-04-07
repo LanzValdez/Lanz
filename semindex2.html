@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Viewer</title>
+
+    <!-- Include Leaflet.js CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        embed, img {
+            width: 100%;
+            height: 800px; /* Increase embed height */
+            border: 1px solid #ddd;
+            margin-top: 20px;
+        }
+        .form-container {
+            margin-top: 20px;
+        }
+        .form-container input, .form-container select {
+            margin-bottom: 10px;
+            padding: 8px;
+            width: 100%;
+            max-width: 300px;
+            display: block;
+        }
+        .add-address-btn, .digitized-btn {
+            padding: 8px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        .add-address-btn:hover, .digitized-btn:hover {
+            background-color: #45a049;
+        }
+        .data-table {
+            margin-top: 20px;
+            width: 100%;
+        }
+        .data-table input {
+            width: 100%;
+            padding: 8px;
+        }
+        h1 {
+            padding: 10px;
+            background-color: gray; /* Changed from orange to gray */
+            color: white;
+        }
+
+        /* Box around Header Information */
+        .header-box {
+            border: 2px solid #ddd;
+            padding: 20px;
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Flexport Customs Form Header -->
+    <h1>Flexport Customs Form</h1>
+    
+    <!-- File Input Section -->
+    <div class="header-container">
+        <label for="fileInput">Choose Files</label>
+        <input type="file" id="fileInput" accept=".csv, .pdf, .jpg, .jpeg, .png" multiple />
+    </div>
+    
+    <div id="fileViewer"></div>
+
+    <!-- Form container for Header Information (Box Style) -->
+    <div class="header-box">
+        <h2>Header Information</h2>
+        <label for="invoiceNo">Invoice No</label>
+        <input type="text" id="invoiceNo" placeholder="Enter Invoice No" />
+        <br>
+        <br>
+
+        <label for="date">Date</label>
+        <input type="text" id="date"/>
+        <br>
+        <br>
+
+        <label for="currency">Currency</label>
+        <select id="currency">
+            <option value=""></option>
+            <option value="PHP">PHP</option>
+            <option value="USD">USD</option>
+            <option value="YEN">YEN</option>
+        </select>
+
+        <div>
+            <a href="#" class="add-address-btn" onclick="openAddressModal()">Add Address</a>
+            <a href="#" class="digitized-btn">Digitize</a>
+        </div>
+    </div>
+
+    <!-- Modal for Address -->
+<div id="addressModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeAddressModal()">&times;</span>
+        <h2>Search Address</h2>
+        
+        <!-- Search Box for Address -->
+        <input type="text" id="addressSearch" placeholder="Search for an address" oninput="searchAddress()" style="width: 100%; padding: 8px; margin-bottom: 10px;">
+        
+        <div id="map" style="height: 400px;"></div> <!-- Map will be here -->
+        
+        <button onclick="selectAddress()">Select</button>
+        <button onclick="closeAddressModal()">Cancel</button>
+    </div>
+</div>
+
+
+    <!-- Commercial Invoice Line Items Table -->
+    <h2>Commercial Invoice Line Items</h2>
+    <table id="productTable">
+        <thead>
+            <tr>
+                <th>#</th> <!-- Non-changeable counter column -->
+                <th>SKU & Product Description</th>
+                <th>PO No</th>
+                <th>Container No.</th>
+                <th>Units</th>
+                <th>Price/Unit</th>
+                <th>Total Price</th>
+                <th>Gross Weight</th>
+                <th>Net Weight</th>
+                <th>Volume</th>
+                <th>Country of Origin</th>
+                <th>Net Net Weight</th>
+                <th>PO Line Item Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr id="row1">
+                <td>1</td> <!-- Row number, non-editable -->
+                <td><input type="text" id="row1-skuDescription" oninput="checkAndAddRow('row1')"></td>
+                <td><input type="text" id="row1-poNumber" oninput="checkAndAddRow('row1')"></td>
+                <td><input type="text" id="row1-containerNo" oninput="checkAndAddRow('row1')"></td>
+                <td><input type="number" id="row1-units" oninput="checkAndAddRow('row1')"></td>
+                <td><input type="number" id="row1-pricePerUnit" oninput="checkAndAddRow('row1')"></td>
+                <td><input type="text" id="row1-totalPrice"></td> <!-- Total Price is editable now -->
+                <td><input type="number" id="row1-grossWeight" oninput="checkAndAddRow('row1')"></td>
+                <td><input type="number" id="row1-netWeight" oninput="checkAndAddRow('row1')"></td>
+                <td><input type="number" id="row1-volume" oninput="checkAndAddRow('row1')"></td>
+                <td><input type="text" id="row1-countryOfOrigin" oninput="checkAndAddRow('row1')"></td>
+                <td><input type="number" id="row1-netNetWeight" oninput="checkAndAddRow('row1')"></td>
+                <td><input type="text" id="row1-poLineItemNumber" oninput="checkAndAddRow('row1')"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script>
+        let rowCount = 1; // To track the row ID
+        let map;
+        let marker;
+
+        // Function to check and add new row when all fields in current row are filled
+        function checkAndAddRow(currentRowId) {
+            const nameInput = document.getElementById(currentRowId + '-skuDescription');
+            const poNumberInput = document.getElementById(currentRowId + '-poNumber');
+            const containerNoInput = document.getElementById(currentRowId + '-containerNo');
+            const unitsInput = document.getElementById(currentRowId + '-units');
+            const priceInput = document.getElementById(currentRowId + '-pricePerUnit');
+            const grossWeightInput = document.getElementById(currentRowId + '-grossWeight');
+            const netWeightInput = document.getElementById(currentRowId + '-netWeight');
+            const volumeInput = document.getElementById(currentRowId + '-volume');
+            const countryInput = document.getElementById(currentRowId + '-countryOfOrigin');
+            const netNetWeightInput = document.getElementById(currentRowId + '-netNetWeight');
+            const poLineItemInput = document.getElementById(currentRowId + '-poLineItemNumber');
+
+            // Check if all fields are filled
+            if (nameInput.value && poNumberInput.value && containerNoInput.value && unitsInput.value && priceInput.value && grossWeightInput.value && netWeightInput.value && volumeInput.value && countryInput.value && netNetWeightInput.value && poLineItemInput.value) {
+                addRow();
+            }
+        }
+
+        // Function to add a new row
+        function addRow() {
+            rowCount++; // Increment row count for unique ID
+            const table = document.getElementById('productTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+            const rowId = 'row' + rowCount;
+            newRow.innerHTML = `
+                <td>${rowCount}</td> <!-- Row counter, non-editable -->
+                <td><input type="text" id="${rowId}-skuDescription" oninput="checkAndAddRow('${rowId}')"></td>
+                <td><input type="text" id="${rowId}-poNumber" oninput="checkAndAddRow('${rowId}')"></td>
+                <td><input type="text" id="${rowId}-containerNo" oninput="checkAndAddRow('${rowId}')"></td>
+                <td><input type="number" id="${rowId}-units" oninput="checkAndAddRow('${rowId}')"></td>
+                <td><input type="number" id="${rowId}-pricePerUnit" oninput="checkAndAddRow('${rowId}')"></td>
+                <td><input type="text" id="${rowId}-totalPrice"></td> <!-- Total Price is editable now -->
+                <td><input type="number" id="${rowId}-grossWeight" oninput="checkAndAddRow('${rowId}')"></td>
+                <td><input type="number" id="${rowId}-netWeight" oninput="checkAndAddRow('${rowId}')"></td>
+                <td><input type="number" id="${rowId}-volume" oninput="checkAndAddRow('${rowId}')"></td>
+                <td><input type="text" id="${rowId}-countryOfOrigin" oninput="checkAndAddRow('${rowId}')"></td>
+                <td><input type="number" id="${rowId}-netNetWeight" oninput="checkAndAddRow('${rowId}')"></td>
+                <td><input type="text" id="${rowId}-poLineItemNumber" oninput="checkAndAddRow('${rowId}')"></td>
+            `;
+            checkAndAddRow(rowId);
+        }
+
+        // Modal logic for map address
+        function initMap() {
+            map = L.map('map').setView([51.505, -0.09], 13); // Default location (London)
+
+            // Add OpenStreetMap tiles to the map
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            map.on('click', function (e) {
+                if (marker) {
+                    marker.setLatLng(e.latlng); // Update marker location
+                } else {
+                    marker = L.marker(e.latlng).addTo(map); // Add new marker
+                }
+            });
+        }
+
+        // Open the address modal
+        function openAddressModal() {
+            document.getElementById('addressModal').style.display = 'block';
+            initMap(); // Initialize the map inside the modal
+        }
+
+        // Close the address modal
+        function closeAddressModal() {
+            document.getElementById('addressModal').style.display = 'none';
+            if (marker) {
+                marker.remove(); // Remove the marker when closing the modal
+            }
+        }
+
+        // Handle the Select button action
+        function selectAddress() {
+            const selectedLatLng = marker ? marker.getLatLng() : null;
+            if (selectedLatLng) {
+                alert(`Selected Address: Latitude: ${selectedLatLng.lat}, Longitude: ${selectedLatLng.lng}`);
+                closeAddressModal(); // Close the modal after selecting the address
+            } else {
+                alert("Please select a location on the map.");
+            }
+        }
+
+         // File input handling for PDFs, Images, and other files
+         document.getElementById('fileInput').addEventListener('change', function (event) {
+            const files = event.target.files;
+            const fileViewer = document.getElementById('fileViewer');
+
+            // Clear the file viewer content before displaying the new files
+            fileViewer.innerHTML = '';
+
+            // Loop through each selected file
+            Array.from(files).forEach(file => {
+                const fileType = file.type;
+
+                // Handle different file types
+                if (fileType === "text/csv") {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const csvData = e.target.result;
+                        const rows = parseCSV(csvData);
+
+                        let tableContent = '<table><thead><tr>';
+                        const headers = rows[0];
+                        headers.forEach(header => {
+                            tableContent += `<th>${header}</th>`;
+                        });
+
+                        tableContent += '</tr></thead><tbody>';
+                        rows.slice(1).forEach(row => {
+                            tableContent += '<tr>';
+                            row.forEach(data => {
+                                tableContent += `<td>${data !== undefined ? data : ''}</td>`;
+                            });
+                            tableContent += '</tr>';
+                        });
+
+                        tableContent += '</tbody></table>';
+                        fileViewer.innerHTML += tableContent; // Append each file's content
+                    };
+                    reader.readAsText(file);
+
+                } else if (fileType.startsWith("image/")) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const img = document.createElement("img");
+                        img.src = e.target.result;
+                        fileViewer.appendChild(img); // Append each image
+                    };
+                    reader.readAsDataURL(file);
+
+                } else if (fileType === "application/pdf") {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const embed = document.createElement("embed");
+                        embed.src = e.target.result;
+                        embed.type = "application/pdf";
+                        embed.width = "100%";
+                        embed.height = "700px"; // Increased height for PDF view
+                        fileViewer.appendChild(embed); // Append each PDF
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    fileViewer.innerHTML += "<p>Unsupported file type.</p>";
+                }
+            });
+        });
+
+        // CSV parsing function to handle quoted commas and empty fields
+        function parseCSV(csvData) {
+            const rows = [];
+            const regex = /("([^"]|"")*"|[^",\n]+)(?=\s*,|\s*\n|\s*$)/g;  // This regex handles quoted strings and commas
+            let match;
+
+            // Split by lines and process each line individually
+            csvData.split('\n').forEach((line, index) => {
+                const row = [];
+                let matchCount = 0;
+
+                // Process each line for comma-separated values
+                while ((match = regex.exec(line)) !== null) {
+                    let value = match[0];
+                    if (value.startsWith('"') && value.endsWith('"')) {
+                        value = value.substring(1, value.length - 1).replace(/""/g, '"');
+                    }
+
+                    row.push(value); // Add the value to the row array
+                    matchCount++;
+                }
+
+                // If it's the first row, store the number of columns (header row)
+                if (index === 0) {
+                    rows.push(row);
+                } else {
+                    // For subsequent rows, align them with the header
+                    if (row.length < rows[0].length) {
+                        const missingColumns = rows[0].length - row.length;
+                        while (row.length < rows[0].length) {
+                            row.push(''); // Add empty fields for missing columns
+                        }
+                    }
+                    rows.push(row);
+                }
+            });
+
+            return rows;
+        }
+    </script>
+</body>
+</html>
