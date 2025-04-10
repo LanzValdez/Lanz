@@ -57,36 +57,31 @@
 <body>
     <h1>Flexport Customs Form</h1>
     <input type="file" id="fileInput" accept=".csv, .pdf, .jpg, .jpeg, .png" multiple />
-    
+
+    <!-- ✅ MOVED HERE: This div now appears early for MutationObserver -->
+    <div class="_12to83ho">
+        <a href="#" class="add-address-btn" id="addAddressBtn">Add Address</a>
+        <a href="#" class="digitized-btn" id="digitizedBtn">Extract</a>
+    </div>
+
     <div id="fileViewer"></div>
 
-    <!-- Form container below file viewer -->
-<div class="form-container">
-    <label for="invoiceNo">Invoice No</label>
-    <input type="text" id="invoiceNo" placeholder="Enter Invoice No" />
+    <!-- Form container -->
+    <div class="form-container">
+        <label for="invoiceNo">Invoice No</label>
+        <input type="text" id="invoiceNo" placeholder="Enter Invoice No" />
 
-    <label for="date">Date</label>
-    <input type="text" id="date" />
+        <label for="date">Date</label>
+        <input type="text" id="date" />
 
-    <label for="currency">Currency</label>
-    <select id="currency">
-        <option value=""></option>
-        <option value="PHP">PHP</option>
-        <option value="USD">USD</option>
-        <option value="YEN">YEN</option>
-    </select>
-</div>
-
-<!-- ✅ MOVED this outside the form container and placed it after -->
-<div class="_12to83ho">
-    <!-- Add Address button (link) -->
-    <a href="#" class="add-address-btn" id="addAddressBtn">Add Address</a>
-
-    <!-- Digitized button (link) -->
-    <a href="#" class="digitized-btn" id="digitizedBtn">Extract</a>
-</div>
-
-
+        <label for="currency">Currency</label>
+        <select id="currency">
+            <option value=""></option>
+            <option value="PHP">PHP</option>
+            <option value="USD">USD</option>
+            <option value="YEN">YEN</option>
+        </select>
+    </div>
 
     <!-- Table for input fields -->
     <h2>Product Details</h2>
@@ -120,9 +115,8 @@
     </table>
 
     <script>
-        let rowCount = 1; // To track the row ID
-        
-        // Function to check and add new row when all fields in current row are filled
+        let rowCount = 1;
+
         function checkAndAddRow(currentRowId) {
             const nameInput = document.getElementById(currentRowId + '-productName');
             const poNumberInput = document.getElementById(currentRowId + '-poNumber');
@@ -134,24 +128,19 @@
             const netWeightInput = document.getElementById(currentRowId + '-netWeight');
             const volumeInput = document.getElementById(currentRowId + '-volume');
 
-            // Check if all fields are filled
-            if (nameInput.value && poNumberInput.value && qtyInput.value && priceInput.value && totalPriceInput.value && countryInput.value && grossWeightInput.value && netWeightInput.value && volumeInput.value) {
+            if (nameInput.value && poNumberInput.value && qtyInput.value && priceInput.value &&
+                totalPriceInput.value && countryInput.value && grossWeightInput.value &&
+                netWeightInput.value && volumeInput.value) {
                 addRow();
             }
         }
 
-        // Function to add a new row
         function addRow() {
-            rowCount++; // Increment row count for unique ID
-            
-            // Create a new row
+            rowCount++;
             const table = document.getElementById('productTable').getElementsByTagName('tbody')[0];
             const newRow = table.insertRow();
-
-            // Generate unique row ID
             const rowId = 'row' + rowCount;
-            
-            // Insert cells and inputs for the new row
+
             newRow.innerHTML = `
                 <td><input type="text" id="${rowId}-productName" oninput="checkAndAddRow('${rowId}')"></td>
                 <td><input type="text" id="${rowId}-poNumber" oninput="checkAndAddRow('${rowId}')"></td>
@@ -164,23 +153,17 @@
                 <td><input type="number" id="${rowId}-volume" oninput="checkAndAddRow('${rowId}')"></td>
             `;
 
-            // Automatically check and add new row if fields are filled
             checkAndAddRow(rowId);
         }
 
-        // File input handling for PDFs, Images, and other files
         document.getElementById('fileInput').addEventListener('change', function (event) {
             const files = event.target.files;
             const fileViewer = document.getElementById('fileViewer');
-
-            // Clear the file viewer content before displaying the new files
             fileViewer.innerHTML = '';
 
-            // Loop through each selected file
             Array.from(files).forEach(file => {
                 const fileType = file.type;
 
-                // Handle different file types
                 if (fileType === "text/csv") {
                     const reader = new FileReader();
                     reader.onload = function (e) {
@@ -203,7 +186,7 @@
                         });
 
                         tableContent += '</tbody></table>';
-                        fileViewer.innerHTML += tableContent; // Append each file's content
+                        fileViewer.innerHTML += tableContent;
                     };
                     reader.readAsText(file);
 
@@ -212,7 +195,7 @@
                     reader.onload = function (e) {
                         const img = document.createElement("img");
                         img.src = e.target.result;
-                        fileViewer.appendChild(img); // Append each image
+                        fileViewer.appendChild(img);
                     };
                     reader.readAsDataURL(file);
 
@@ -224,7 +207,7 @@
                         embed.type = "application/pdf";
                         embed.width = "100%";
                         embed.height = "600px";
-                        fileViewer.appendChild(embed); // Append each PDF
+                        fileViewer.appendChild(embed);
                     };
                     reader.readAsDataURL(file);
                 } else {
@@ -233,38 +216,26 @@
             });
         });
 
-        // CSV parsing function to handle quoted commas and empty fields
         function parseCSV(csvData) {
             const rows = [];
-            const regex = /("([^"]|"")*"|[^",\n]+)(?=\s*,|\s*\n|\s*$)/g;  // This regex handles quoted strings and commas
+            const regex = /("([^"]|"")*"|[^",\n]+)(?=\s*,|\s*\n|\s*$)/g;
             let match;
 
-            // Split by lines and process each line individually
             csvData.split('\n').forEach((line, index) => {
                 const row = [];
-                let matchCount = 0;
-
-                // Process each line for comma-separated values
                 while ((match = regex.exec(line)) !== null) {
                     let value = match[0];
                     if (value.startsWith('"') && value.endsWith('"')) {
                         value = value.substring(1, value.length - 1).replace(/""/g, '"');
                     }
-
-                    row.push(value); // Add the value to the row array
-                    matchCount++;
+                    row.push(value);
                 }
 
-                // If it's the first row, store the number of columns (header row)
                 if (index === 0) {
                     rows.push(row);
                 } else {
-                    // For subsequent rows, align them with the header
-                    if (row.length < rows[0].length) {
-                        const missingColumns = rows[0].length - row.length;
-                        while (row.length < rows[0].length) {
-                            row.push(''); // Add empty fields for missing columns
-                        }
+                    while (row.length < rows[0].length) {
+                        row.push('');
                     }
                     rows.push(row);
                 }
@@ -273,6 +244,5 @@
             return rows;
         }
     </script>
-
 </body>
 </html>
