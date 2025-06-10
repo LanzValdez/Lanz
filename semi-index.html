@@ -4,274 +4,144 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Flexport Customs Form</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/handsontable@14.1.0/dist/handsontable.full.min.css" rel="stylesheet">
   <style>
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    table, th, td {
-      border: 1px solid black;
-    }
-    th, td {
-      padding: 8px;
-      text-align: left;
-    }
-    embed, img {
-      width: 100%;
-      height: auto;
-      border: 1px solid #ddd;
+    .hot-container {
       margin-top: 20px;
     }
     .form-container {
       margin-top: 20px;
     }
-    .form-container input, .form-container select {
-      margin-bottom: 10px;
-      padding: 8px;
-      width: 100%;
-      max-width: 300px;
-      display: block;
-    }
-    .add-address-btn, .digitized-btn {
-      padding: 8px;
-      background-color: #4CAF50;
-      color: white;
-      text-decoration: none;
-      display: inline-block;
-      margin-top: 10px;
-      border-radius: 5px;
-    }
-    .add-address-btn:hover, .digitized-btn:hover {
-      background-color: #45a049;
-    }
-    .data-table {
-      margin-top: 20px;
-      width: 100%;
-    }
-    .data-table input {
-      width: 100%;
-      padding: 8px;
-    }
-
-
   </style>
 </head>
-
-<body>
- 
+<body class="container py-4">
 
   <h1>Flexport Customs Form</h1>
-  <input type="file" id="fileInput" accept=".csv, .pdf, .jpg, .jpeg, .png" multiple />
+  <button class="btn btn-primary" onclick="forceDownload()">Download Single File</button>
+  <button class="btn btn-primary" onclick="forceDownload2()">Download Multiple Files</button>
 
-  <div id="fileViewer"></div>
 
-  <!-- Form container -->
   <div class="form-container">
-    <label for="invoiceNo">Invoice No</label>
-    <input type="text" id="invoiceNo" placeholder="Enter Invoice No" />
-
-    <label for="date">Date</label>
-    <input type="text" id="date" />
-
-    <label for="currency">Currency</label>
-    <select id="currency">
-      <option value=""></option>
-      <option value="PHP">PHP</option>
-      <option value="USD">USD</option>
-      <option value="YEN">YEN</option>
-    </select>
-  </div>
-
-  <div class="_12to83ho">
-    <h2 class="inject" style="color: blue; text-decoration: underline; display: inline-block;">
-      FLEX-1234567
-    </h2>
-   
-  </div>
-
-  <a href="#" class="add-address-btn" id="addAddressBtn">Add Address</a>
-
-  <!-- Table for input fields -->
-  <h2>Product Details</h2>
-  <table id="productTable">
-    <thead>
-      <tr>
-        <th>Product Name</th>
-        <th>PO Number</th>
-        <th>QTY</th>
-        <th>Price per unit</th>
-        <th>Total Price</th>
-        <th>Country of Origin</th>
-        <th>Gross Weight</th>
-        <th>Net Weight</th>
-        <th>Volume</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr id="row1">
-        <td><input type="text" id="row1-productName" oninput="checkAndAddRow('row1')" /></td>
-        <td><input type="text" id="row1-poNumber" oninput="checkAndAddRow('row1')" /></td>
-        <td><input type="number" id="row1-qty" oninput="checkAndAddRow('row1')" /></td>
-        <td><input type="number" id="row1-price" oninput="checkAndAddRow('row1')" /></td>
-        <td><input type="text" id="row1-totalPrice" oninput="checkAndAddRow('row1')" /></td>
-        <td><input type="text" id="row1-countryOfOrigin" oninput="checkAndAddRow('row1')" /></td>
-        <td><input type="number" id="row1-grossWeight" oninput="checkAndAddRow('row1')" /></td>
-        <td><input type="number" id="row1-netWeight" oninput="checkAndAddRow('row1')" /></td>
-        <td><input type="number" id="row1-volume" oninput="checkAndAddRow('row1')" /></td>
-      </tr>
-    </tbody>
-  </table>
-
-  <!-- Modal -->
-<div id="addressModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
-  <div style="background:#fff; padding:20px; max-width:400px; margin:100px auto; position:relative; border-radius:8px;">
-    <h3>Add Address</h3>
-    <input type="text" id="addressInput" placeholder="Enter address" style="width:80%; padding:8px; margin-bottom:10px;" />
-    <button id="closeModal" style="padding:8px 12px; background:#f44336; color:white; border:none; border-radius:4px;">Close</button>
+  <div class="row">
+    <div class="col-auto mb-3">
+      <label for="invoiceNo" class="form-label">Invoice No</label>
+      <input type="text" id="invoiceNo" class="form-control" placeholder="Enter Invoice No" style="width: 200px;">
+    </div>
+    <div class="col-auto mb-3">
+      <label for="date" class="form-label">Date</label>
+      <input type="text" id="date" class="form-control" style="width: 200px;">
+    </div>
+    <div class="col-auto mb-3">
+      <label for="currency" class="form-label">Currency</label>
+      <select id="currency" class="form-select" style="width: 200px;">
+        <option value=""></option>
+        <option value="PHP">PHP</option>
+        <option value="USD">USD</option>
+        <option value="YEN">YEN</option>
+      </select>
+    </div>
   </div>
 </div>
 
 
+
+<h4 class="text-primary text-decoration-underline mb-4">FLEX-1234567</h4>
+
+<button class="btn btn-success mb-3" id="addAddressBtn">Add Address</button>
+
+<div class="hot-container" id="hot"></div>
+
+
+  <div id="addressModal" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Address</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="text" id="addressInput" class="form-control" placeholder="Enter address">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/handsontable@14.1.0/dist/handsontable.full.min.js"></script>
   <script>
-    let rowCount = 1;
-
-    function checkAndAddRow(currentRowId) {
-      const nameInput = document.getElementById(currentRowId + '-productName');
-      const poNumberInput = document.getElementById(currentRowId + '-poNumber');
-      const qtyInput = document.getElementById(currentRowId + '-qty');
-      const priceInput = document.getElementById(currentRowId + '-price');
-      const totalPriceInput = document.getElementById(currentRowId + '-totalPrice');
-      const countryInput = document.getElementById(currentRowId + '-countryOfOrigin');
-      const grossWeightInput = document.getElementById(currentRowId + '-grossWeight');
-      const netWeightInput = document.getElementById(currentRowId + '-netWeight');
-      const volumeInput = document.getElementById(currentRowId + '-volume');
-
-      if (nameInput.value && poNumberInput.value && qtyInput.value && priceInput.value &&
-        totalPriceInput.value && countryInput.value && grossWeightInput.value &&
-        netWeightInput.value && volumeInput.value) {
-        addRow();
-      }
-    }
-
-    function addRow() {
-      rowCount++;
-      const table = document.getElementById('productTable').getElementsByTagName('tbody')[0];
-      const newRow = table.insertRow();
-      const rowId = 'row' + rowCount;
-
-      newRow.innerHTML = `
-        <td><input type="text" id="${rowId}-productName" oninput="checkAndAddRow('${rowId}')"></td>
-        <td><input type="text" id="${rowId}-poNumber" oninput="checkAndAddRow('${rowId}')"></td>
-        <td><input type="number" id="${rowId}-qty" oninput="checkAndAddRow('${rowId}')"></td>
-        <td><input type="number" id="${rowId}-price" oninput="checkAndAddRow('${rowId}')"></td>
-        <td><input type="text" id="${rowId}-totalPrice" oninput="checkAndAddRow('${rowId}')"></td>
-        <td><input type="text" id="${rowId}-countryOfOrigin" oninput="checkAndAddRow('${rowId}')"></td>
-        <td><input type="number" id="${rowId}-grossWeight" oninput="checkAndAddRow('${rowId}')"></td>
-        <td><input type="number" id="${rowId}-netWeight" oninput="checkAndAddRow('${rowId}')"></td>
-        <td><input type="number" id="${rowId}-volume" oninput="checkAndAddRow('${rowId}')"></td>
-      `;
-    }
-
-    document.getElementById('fileInput').addEventListener('change', function (event) {
-      const files = event.target.files;
-      const fileViewer = document.getElementById('fileViewer');
-      fileViewer.innerHTML = '';
-
-      Array.from(files).forEach(file => {
-        const fileType = file.type;
-
-        if (fileType === "text/csv") {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            const csvData = e.target.result;
-            const rows = parseCSV(csvData);
-
-            let tableContent = '<table><thead><tr>';
-            const headers = rows[0];
-            headers.forEach(header => {
-              tableContent += `<th>${header}</th>`;
-            });
-
-            tableContent += '</tr></thead><tbody>';
-            rows.slice(1).forEach(row => {
-              tableContent += '<tr>';
-              row.forEach(data => {
-                tableContent += `<td>${data !== undefined ? data : ''}</td>`;
-              });
-              tableContent += '</tr>';
-            });
-
-            tableContent += '</tbody></table>';
-            fileViewer.innerHTML += tableContent;
-          };
-          reader.readAsText(file);
-
-        } else if (fileType.startsWith("image/")) {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            const img = document.createElement("img");
-            img.src = e.target.result;
-            fileViewer.appendChild(img);
-          };
-          reader.readAsDataURL(file);
-
-        } else if (fileType === "application/pdf") {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            const embed = document.createElement("embed");
-            embed.src = e.target.result;
-            embed.type = "application/pdf";
-            embed.width = "100%";
-            embed.height = "600px";
-            fileViewer.appendChild(embed);
-          };
-          reader.readAsDataURL(file);
-        } else {
-          fileViewer.innerHTML += "<p>Unsupported file type.</p>";
-        }
-      });
+    const container = document.getElementById('hot');
+    const hot = new Handsontable(container, {
+      data: [],
+      colHeaders: [
+        'SKU & Product Description',
+        'PO Number',
+        'Container No.',
+        'Units',
+        'Price per Unit',
+        'Total Price',
+        'Gross Weight',
+        'Prorated Gross Weight',
+        'Net Weight',
+        'Prorated Net Weight',
+        'Volume',
+        'Country of Origin'
+      ],
+      columns: [
+        {}, {}, {},
+        { type: 'numeric' }, { type: 'numeric' }, { type: 'numeric' },
+        { type: 'numeric' }, { type: 'numeric' },
+        { type: 'numeric' }, { type: 'numeric' },
+        { type: 'numeric' }, {}
+      ],
+      stretchH: 'all',
+      minSpareRows: 1,
+      rowHeaders: true,
+      contextMenu: true,
+      licenseKey: 'non-commercial-and-evaluation'
     });
 
-    function parseCSV(csvData) {
-      const rows = [];
-      const regex = /("([^"]|"")*"|[^",\n]+)(?=\s*,|\s*\n|\s*$)/g;
-      let match;
+    const addressModal = new bootstrap.Modal(document.getElementById('addressModal'));
+    document.getElementById('addAddressBtn').addEventListener('click', () => {
+      addressModal.show();
+    });
 
-      csvData.split('\n').forEach((line, index) => {
-        const row = [];
-        while ((match = regex.exec(line)) !== null) {
-          let value = match[0];
-          if (value.startsWith('"') && value.endsWith('"')) {
-            value = value.substring(1, value.length - 1).replace(/""/g, '"');
-          }
-          row.push(value);
-        }
-
-        if (index === 0) {
-          rows.push(row);
-        } else {
-          while (row.length < rows[0].length) {
-            row.push('');
-          }
-          rows.push(row);
-        }
-      });
-
-      return rows;
+    function forceDownload() {
+      fetch('https://lanzvaldez.github.io/Lanz/Files/AGREX-CLIENT.pdf')
+        .then(res => res.blob())
+        .then(blob => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'AGREX-CLIENT.pdf';
+          a.click();
+          URL.revokeObjectURL(url);
+        });
     }
 
-    const addAddressBtn = document.getElementById('addAddressBtn');
-  const addressModal = document.getElementById('addressModal');
-  const closeModalBtn = document.getElementById('closeModal');
+    function forceDownload2() {
+  const files = [
+    { name: 'Packinglist.pdf', url: 'https://lanzvaldez.github.io/Lanz/Files/Packinglist.pdf' },
+    { name: 'Commercial Invoice.pdf', url: 'https://lanzvaldez.github.io/Lanz/Files/Commercial%20Invoice.pdf' }
+  ];
 
-  addAddressBtn.addEventListener('click', function (e) {
-    e.preventDefault();
-    addressModal.style.display = 'block';
+  files.forEach(file => {
+    fetch(file.url)
+      .then(res => res.blob())
+      .then(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.name;
+        a.click();
+        URL.revokeObjectURL(url);
+      })
+      .catch(err => console.error(`Failed to download ${file.name}:`, err));
   });
-
-  closeModalBtn.addEventListener('click', function () {
-    addressModal.style.display = 'none';
-  });
+}
 
   </script>
 </body>
