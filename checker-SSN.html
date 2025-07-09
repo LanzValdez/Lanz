@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Checkr-style Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+
+    .sidebar {
+      min-height: 100vh;
+      background-color: #004c6d;
+      color: white;
+    }
+
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      display: block;
+      padding: 10px 15px;
+    }
+
+    .sidebar a:hover {
+      background-color: #005f87;
+    }
+
+    .main-content {
+      padding: 20px;
+    }
+
+    .card {
+      margin-bottom: 20px;
+    }
+
+    .right-panel {
+      background-color: white;
+      border-left: 1px solid #ddd;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .section-title {
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-2 sidebar d-flex flex-column">
+      <h5 class="p-3">Checkr Internal</h5>
+      <a href="#">Candidates</a>
+      <a href="#">Adverse Actions</a>
+      <a href="#">Fair Chance</a>
+      <a href="#">Account</a>
+      <a href="#">Checkr Admin</a>
+      <a href="#">Help</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-7 main-content">
+      <h3>Juana Del Pueblo Martinez Rodriguez</h3>
+      <p><small>Created: Jun 29, 2025 &nbsp; • &nbsp; Package: PR Driver Basic &nbsp; • &nbsp; Status: <span class="badge bg-warning text-dark">Pending</span></small></p>
+
+      <!-- Report Summary -->
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Report Summary</h5>
+          <div class="row text-center">
+            <div class="col">Federal Search<br><span class="text-muted">Pending</span></div>
+            <div class="col">Global Watchlist<br><span class="text-muted">Pending</span></div>
+            <div class="col">National Search<br><span class="text-muted">Pending</span></div>
+            <div class="col">Sex Offender Search<br><span class="text-muted">Pending</span></div>
+            <div class="col">SSN Trace<br><span class="text-muted">Pending</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SSN Trace -->
+      <div class="card">
+        <div class="card-body" id="ssnTrace">
+          <h6 class="card-title">SSN Trace</h6>
+           <p class="text-muted">Pending</p>
+          <p class="text-muted">Information returned by this search is not a part of the consumer report...</p>
+        </div>
+      </div>
+
+      <!-- Sex Offender Search -->
+      <div class="card">
+        <div class="card-body">
+          <h6 class="card-title">Sex Offender Search</h6>
+          <p class="text-muted">Pending</p>
+        </div>
+      </div>
+
+       <!-- MVR -->
+      <div class="card">
+        <div class="card-body" id="mvr">
+          <h6 class="card-title">Motor Vehicle Record</h6>
+          <p class="text-muted">Pending</p>
+        </div>
+      </div>
+
+      <!-- Candidate Information Form -->
+<div class="card mb-4">
+  <div class="card-body">
+    <h5 class="card-title mb-3">Admin Section</h5>
+    <form>
+      <div class="row mb-3">
+        <div class="col-md-3">
+          <label class="form-label">First Name</label>
+          <input type="text" class="form-control" id="firstNameInput" value="Juana">
+        </div>
+        <div class="col-md-3">
+  <label class="form-label">Middle Name</label>
+  <input type="text" class="form-control" id="middleNameInput" value="Pueblo">
+  <div class="form-check mt-1">
+    <input class="form-check-input" type="checkbox" id="noMiddleNameCheckbox" onchange="toggleMiddleName()">
+    <label class="form-check-label" for="noMiddleNameCheckbox">
+      Candidate does not have a middle name
+    </label>
+  </div>
+</div>
+
+        <div class="col-md-3">
+          <label class="form-label">Last Name</label>
+         <input type="text" class="form-control" id="lastNameInput" value="Martinez Rodriguez">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Custom ID</label>
+        <input type="text" class="form-control" id="customIdInput" placeholder="Optional">
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-3">
+          <label class="form-label">Date of Birth</label>
+         <input type="date" class="form-control" id="dobInput" value="1975-01-15">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">ZIP Code</label>
+          <input type="text" class="form-control" value="00962">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" value="jeremyzomar2@gmail.com">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Phone</label>
+          <input type="text" class="form-control" value="(939) 775-2774">
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <button type="button" class="btn btn-success">Update Candidate</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+  <div class="card">
+  <div class="card-body bg-light cursor-pointer" data-bs-toggle="collapse" data-bs-target="#documentsCollapse" aria-expanded="false" aria-controls="documentsCollapse">
+    <h6 class="card-title mb-0">Documents</h6>
+  </div>
+
+
+<!-- Collapsible Content -->
+<div class="collapse" id="documentsCollapse">
+  <div class="card card-body" id="documentsContainer">
+    <!-- Example Document -->
+    <div class="mb-3">
+      <div class="mt-3">
+        <div class="col-md-4">
+          <a href="https://rpa-test-invoice.s3.ap-southeast-2.amazonaws.com/license.jpg" target="_blank">
+  <img src="https://rpa-test-invoice.s3.ap-southeast-2.amazonaws.com/license.jpg" alt="License" class="img-fluid rounded border">
+</a>
+
+        </div>
+        <div class="col-md-8">
+          <p><strong>Uploaded at:</strong> 06/19/2025 at 4:51 AM</p>
+          <a href="consent_form.pdf" target="_blank" class="btn btn-outline-secondary btn-sm mb-2">MVR Consent Form ↗</a>
+          <button class="btn btn-warning btn-sm">Reject</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="col-md-3 right-panel">
+      <div class="section-title">Candidate Information</div>
+      <p><strong>First Name:</strong>Juana Del Pueblo</p>
+      <p><strong>Middle Name:</strong>Martinez</p>
+      <p><strong>Last Name:</strong>Rodriguez</p>
+      <p><strong>Date of Birth:</strong>Jan 15, 1975 (50 years old)</p>
+      <p><strong>Location:</strong> Puerto Rico</p>
+      <p><strong>Phone:</strong> (939) 775-2774</p>
+      <p><strong>Email:</strong> jeremyzomar2@gmail.com</p>
+      <p><strong>Driver’s License:</strong> 7278362 PR</p>
+      <p><strong>Created:</strong> <span id="dateCreated">Jun 29, 2025 4:32 AM CST</span></p>
+    </div>
+  </div>
+</div>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  function toggleMiddleName() {
+    const checkbox = document.getElementById('noMiddleNameCheckbox');
+    const middleInput = document.getElementById('middleName');
+    
+    if (checkbox.checked) {
+      middleInput.value = '';
+      middleInput.disabled = true;
+    } else {
+      middleInput.disabled = false;
+    }
+  }
+</script>
+
+</html>
