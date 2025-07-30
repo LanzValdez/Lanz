@@ -48,6 +48,14 @@
 
 <a href ="#" class="text-primary text-decoration-underline mb-4" style="pointer-events: none; cursor: default;">FLEX-1234567</a>
 
+
+
+<div class="mb-4 mt-3 d-flex align-items-center gap-2">
+  <input type="text" id="flexIdInput" class="form-control" placeholder="Enter new ID number" style="width: 200px;">
+  <button class="btn btn-outline-primary" onclick="updateFlexId()">Update</button>
+</div>
+
+
 <button class="btn btn-success mb-3" id="addAddressBtn">Add Address</button>
 
 <div class="hot-container" id="hot"></div>
@@ -139,6 +147,17 @@
       .catch(err => console.error(`Failed to download ${file.name}:`, err));
   });
 }
+
+function updateFlexId() {
+  const inputVal = document.getElementById('flexIdInput').value.trim();
+  const link = document.querySelector('a.text-primary');
+  if (/^\d+$/.test(inputVal)) {
+    link.textContent = `FLEX-${inputVal}`;
+  } else {
+    alert('Please enter a valid number.');
+  }
+}
+
 
   </script>
 </body>
