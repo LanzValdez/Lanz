@@ -12,12 +12,10 @@
     body {
       background-color: #f8f9fa;
     }
-
     .container {
       max-width: 900px;
       margin-top: 60px;
     }
-
     .textarea-box {
       background-color: white;
       padding: 20px;
@@ -25,7 +23,6 @@
       box-shadow: 0 0 15px rgba(0,0,0,0.05);
       margin-bottom: 30px;
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
@@ -50,10 +47,10 @@
     <!-- First textarea -->
     <div class="textarea-box">
       <label for="inputText" class="form-label">Type Command Here:</label>
-      <textarea class="form-control" id="inputText" rows="3" placeholder=""></textarea>
+      <textarea class="form-control" id="inputText" rows="3"></textarea>
     </div>
 
-    <!-- Second: Table with tab navigation -->
+    <!-- Second: Table -->
     <div class="textarea-box">
       <label class="form-label">Data Table:</label>
       <table>
@@ -65,106 +62,104 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td><input type="text" /></td>
-            <td><input type="text" /></td>
-            <td><input type="text" /></td>
-          </tr>
-          <tr>
-            <td><input type="text" /></td>
-            <td><input type="text" /></td>
-            <td><input type="text" /></td>
-          </tr>
-          <tr>
-            <td><input type="text" /></td>
-            <td><input type="text" /></td>
-            <td><input type="text" /></td>
-          </tr>
-          <tr>
-            <td><input type="text" /></td>
-            <td><input type="text" /></td>
-            <td><input type="text" /></td>
-          </tr>
+          <tr><td><input type="text" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
+          <tr><td><input type="text" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
+          <tr><td><input type="text" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
+          <tr><td><input type="text" /></td><td><input type="text" /></td><td><input type="text" /></td></tr>
         </tbody>
       </table>
     </div>
 
+    <!-- Email field -->
+    <div class="textarea-box">
+      <label for="customEmail" class="form-label">Enter Email:</label>
+      <input type="email" class="form-control" id="customEmail" placeholder="example@email.com" />
+    </div>
 
-   <!-- Third: Different input type -->
-<div class="textarea-box">
-  <label for="customEmail" class="form-label">Enter Email:</label>
-  <input type="email" class="form-control" id="customEmail" placeholder="example@email.com" />
-</div>
+    <!-- Tabs for Invoice with Example + Random -->
+    <div class="textarea-box">
+      <h5>Invoice Details (Mixed)</h5>
+      <ul class="nav nav-tabs" id="invoiceTabs1" role="tablist">
+        <li class="nav-item"><button class="nav-link active" id="tab1a" data-bs-toggle="tab" data-bs-target="#invoice1a" type="button">Random 1</button></li>
+        <li class="nav-item"><button class="nav-link" id="tab2a" data-bs-toggle="tab" data-bs-target="#invoice2a" type="button">Random 2</button></li>
+        <li class="nav-item"><button class="nav-link" id="tab3a" data-bs-toggle="tab" data-bs-target="#invoice3a" type="button">Random 3</button></li>
+      </ul>
+      <div class="tab-content p-3 border border-top-0 rounded-bottom">
+        <!-- Example -->
+        <div class="tab-pane fade show active" id="invoice1a">
+          <div class="mb-3"><label class="form-label">Company:</label><input type="text" class="form-control" value="Support Ninja" /></div>
+          <div class="mb-3"><label class="form-label">Start Date:</label><input type="date" class="form-control" value="2024-03-25" /></div>
+          <div class="mb-3"><label class="form-label">End Date:</label><input type="date" class="form-control" value="2025-03-25" /></div>
+          <div class="mb-3"><label class="form-label">Email:</label><input type="email" class="form-control" value="example@supportninja.com" /></div>
+          <div class="mb-3"><label class="form-label">Address:</label><textarea class="form-control" rows="3">SM CITY NORTH EDSA
+14TH FLR TOWER 1</textarea></div>
+          <div class="mb-3"><label class="form-label">Invoice Number:</label><input type="text" class="form-control" maxlength="7" value="A1B2C3D" /></div>
+          <div class="mb-3"><label class="form-label">Total Price:</label><input type="number" step="0.01" class="form-control" value="20.25" /></div>
+        </div>
+        <!-- Random 1 -->
+        <div class="tab-pane fade" id="invoice2a"><div id="randomInvoice1"></div></div>
+        <!-- Random 2 -->
+        <div class="tab-pane fade" id="invoice3a"><div id="randomInvoice2"></div></div>
+      </div>
+    </div>
 
-<!-- First new div: pre-filled -->
-<div class="textarea-box">
-  <h5>Invoice Details (Pre-filled)</h5>
-  <div class="mb-3">
-    <label class="form-label">Company:</label>
-    <input type="text" class="form-control" value="Support Ninja" />
+  
+    <!-- Single Empty Invoice + Clear All -->
+    <div class="textarea-box">
+      <h5>Invoice Details (Single Empty)</h5>
+      <div id="singleEmptyInvoice">
+        <div class="mb-3"><label class="form-label">Company:</label><input type="text" class="form-control" /></div>
+        <div class="mb-3"><label class="form-label">Start Date:</label><input type="date" class="form-control" /></div>
+        <div class="mb-3"><label class="form-label">End Date:</label><input type="date" class="form-control" /></div>
+        <div class="mb-3"><label class="form-label">Email:</label><input type="email" class="form-control" /></div>
+        <div class="mb-3"><label class="form-label">Address:</label><textarea class="form-control" rows="3"></textarea></div>
+        <div class="mb-3"><label class="form-label">Invoice Number:</label><input type="text" class="form-control" maxlength="7" /></div>
+        <div class="mb-3"><label class="form-label">Total Price:</label><input type="number" step="0.01" class="form-control" /></div>
+      </div>
+      <button class="btn btn-danger mt-3" onclick="clearSingleEmpty()">Clear All</button>
+    </div>
   </div>
-  <div class="mb-3">
-    <label class="form-label">Start Date:</label>
-    <input type="date" class="form-control" value="2024-03-25" />
-  </div>
-  <div class="mb-3">
-    <label class="form-label">End Date:</label>
-    <input type="date" class="form-control" value="2025-03-25" />
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Email:</label>
-    <input type="email" class="form-control" value="example@supportninja.com" />
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Address:</label>
-    <textarea class="form-control" rows="3">SM CITY NORTH EDSA
-14TH FLR TOWER 1</textarea>
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Invoice Number:</label>
-    <input type="text" class="form-control" maxlength="7" value="A1B2C3D" />
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Total Price:</label>
-    <input type="number" step="0.01" class="form-control" value="20.25" />
-  </div>
-</div>
-
-<!-- Second new div: empty form -->
-<div class="textarea-box">
-  <h5>Invoice Details (Empty)</h5>
-  <div class="mb-3">
-    <label class="form-label">Company:</label>
-    <input type="text" class="form-control" />
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Start Date:</label>
-    <input type="date" class="form-control" />
-  </div>
-  <div class="mb-3">
-    <label class="form-label">End Date:</label>
-    <input type="date" class="form-control" />
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Email:</label>
-    <input type="email" class="form-control" />
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Address:</label>
-    <textarea class="form-control" rows="3"></textarea>
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Invoice Number:</label>
-    <input type="text" class="form-control" maxlength="7" />
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Total Price:</label>
-    <input type="number" step="0.01" class="form-control" />
-  </div>
-</div>
-
-
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Random generator
+    function generateRandomInvoice() {
+      const companies = ["Acme Corp", "Tech Ninja", "Skyline Ltd", "ByteWorks", "Pixel Labs"];
+      const emails = ["info@acme.com", "sales@techninja.io", "support@skyline.org", "hello@byteworks.dev", "team@pixellabs.co"];
+      const addresses = ["123 Main St", "456 Elm Rd", "789 Oak Ave", "101 Pine Blvd", "505 Sunset Way"];
+      const company = companies[Math.floor(Math.random()*companies.length)];
+      const email = emails[Math.floor(Math.random()*emails.length)];
+      const address = addresses[Math.floor(Math.random()*addresses.length)];
+      const invoiceNum = Math.random().toString(36).substr(2,7).toUpperCase();
+      const price = (Math.random()*1000).toFixed(2);
+      const today = new Date();
+      const start = today.toISOString().split("T")[0];
+      const end = new Date(today.setMonth(today.getMonth()+6)).toISOString().split("T")[0];
+
+      return `
+        <div class="mb-3"><label class="form-label">Company:</label><input type="text" class="form-control" value="${company}" /></div>
+        <div class="mb-3"><label class="form-label">Start Date:</label><input type="date" class="form-control" value="${start}" /></div>
+        <div class="mb-3"><label class="form-label">End Date:</label><input type="date" class="form-control" value="${end}" /></div>
+        <div class="mb-3"><label class="form-label">Email:</label><input type="email" class="form-control" value="${email}" /></div>
+        <div class="mb-3"><label class="form-label">Address:</label><textarea class="form-control" rows="3">${address}</textarea></div>
+        <div class="mb-3"><label class="form-label">Invoice Number:</label><input type="text" class="form-control" maxlength="7" value="${invoiceNum}" /></div>
+        <div class="mb-3"><label class="form-label">Total Price:</label><input type="number" step="0.01" class="form-control" value="${price}" /></div>
+      `;
+    }
+
+    // Random tabs refresh
+    document.getElementById("tab2a").addEventListener("shown.bs.tab", () => {
+      document.getElementById("randomInvoice1").innerHTML = generateRandomInvoice();
+    });
+    document.getElementById("tab3a").addEventListener("shown.bs.tab", () => {
+      document.getElementById("randomInvoice2").innerHTML = generateRandomInvoice();
+    });
+
+    // Clear all fields in the single empty invoice
+    function clearSingleEmpty() {
+      const inputs = document.querySelectorAll("#singleEmptyInvoice input, #singleEmptyInvoice textarea");
+      inputs.forEach(el => el.value = "");
+    }
+  </script>
 </body>
 </html>
