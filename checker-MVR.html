@@ -109,7 +109,7 @@
         </div>
       </div>
 
-      <!-- Candidate Information Form -->
+<!-- Candidate Information Form -->
 <div class="card mb-4">
   <div class="card-body">
     <h5 class="card-title mb-3">Admin Section</h5>
@@ -117,45 +117,79 @@
       <div class="row mb-3">
         <div class="col-md-3">
           <label class="form-label">First Name</label>
-          <input type="text" class="form-control" id="firstNameInput" value="Juana">
+          <input type="text" 
+                 class="form-control" 
+                 id="firstNameInput" 
+                 name="first_name" 
+                 value="Juana">
         </div>
+
         <div class="col-md-3">
-  <label class="form-label">Middle Name</label>
-  <input type="text" class="form-control" id="middleNameInput" value="Pueblo">
-  <div class="form-check mt-1">
-    <input class="form-check-input" type="checkbox" id="noMiddleNameCheckbox" onchange="toggleMiddleName()">
-    <label class="form-check-label" for="noMiddleNameCheckbox">
-      Candidate does not have a middle name
-    </label>
-  </div>
-</div>
+          <label class="form-label">Middle Name</label>
+          <input type="text" 
+                 class="form-control" 
+                 id="middleNameInput" 
+                 name="middle_name" 
+                 value="Pueblo">
+          <div class="form-check mt-1">
+            <input class="form-check-input" type="checkbox" id="noMiddleNameCheckbox" onchange="toggleMiddleName()">
+            <label class="form-check-label" for="noMiddleNameCheckbox">
+              Candidate does not have a middle name
+            </label>
+          </div>
+        </div>
 
         <div class="col-md-3">
           <label class="form-label">Last Name</label>
-         <input type="text" class="form-control" id="lastNameInput" value="Martinez Rodriguez">
+          <input type="text" 
+                 class="form-control" 
+                 id="lastNameInput" 
+                 name="last_name" 
+                 value="Martinez Rodriguez">
         </div>
+
         <div class="col-md-3">
           <label class="form-label">Custom ID</label>
-        <input type="text" class="form-control" id="customIdInput" placeholder="Optional">
+          <input type="text" 
+                 class="form-control" 
+                 id="customIdInput" 
+                 name="custom_id" 
+                 placeholder="Optional">
         </div>
       </div>
 
       <div class="row mb-3">
         <div class="col-md-3">
           <label class="form-label">Date of Birth</label>
-         <input type="date" class="form-control" id="dobInput" value="1975-01-15">
+          <input type="date" 
+                 class="form-control" 
+                 id="dobInput" 
+                 name="dob" 
+                 value="1975-01-15">
         </div>
+
         <div class="col-md-3">
           <label class="form-label">ZIP Code</label>
-          <input type="text" class="form-control" value="00962">
+          <input type="text" 
+                 class="form-control" 
+                 name="zip_code" 
+                 value="00962">
         </div>
+
         <div class="col-md-3">
           <label class="form-label">Email</label>
-          <input type="email" class="form-control" value="jeremyzomar2@gmail.com">
+          <input type="email" 
+                 class="form-control" 
+                 name="email" 
+                 value="jeremyzomar2@gmail.com">
         </div>
+
         <div class="col-md-3">
           <label class="form-label">Phone</label>
-          <input type="text" class="form-control" value="(939) 775-2774">
+          <input type="text" 
+                 class="form-control" 
+                 name="phone" 
+                 value="(939) 775-2774">
         </div>
       </div>
 
@@ -165,7 +199,6 @@
     </form>
   </div>
 </div>
-
 
   <div class="card">
   <div class="card-body bg-light cursor-pointer" data-bs-toggle="collapse" data-bs-target="#documentsCollapse" aria-expanded="false" aria-controls="documentsCollapse">
