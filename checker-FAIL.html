@@ -67,7 +67,7 @@
 
     <!-- Main Content -->
     <div class="col-md-7 main-content">
-      <h3>Marie Jumio</h3>
+      <h3>Juana Del Pueblo Martinez Rodriguez</h3>
       <p><small>Created: Jun 29, 2025 &nbsp; • &nbsp; Package: PR Driver Basic &nbsp; • &nbsp; Status: <span class="badge bg-warning text-dark">Pending</span></small></p>
 
       <!-- Report Summary -->
@@ -109,7 +109,7 @@
         </div>
       </div>
 
-      <!-- Candidate Information Form -->
+<!-- Candidate Information Form -->
 <div class="card mb-4">
   <div class="card-body">
     <h5 class="card-title mb-3">Admin Section</h5>
@@ -117,45 +117,79 @@
       <div class="row mb-3">
         <div class="col-md-3">
           <label class="form-label">First Name</label>
-          <input type="text" class="form-control" id="firstNameInput" value="Marie">
+          <input type="text" 
+                 class="form-control" 
+                 id="firstNameInput" 
+                 name="first_name" 
+                 value="Davae">
         </div>
+
         <div class="col-md-3">
-  <label class="form-label">Middle Name</label>
-  <input type="text" class="form-control" id="middleNameInput" value="" disabled>
-  <div class="form-check mt-1">
-    <input class="form-check-input" type="checkbox" id="noMiddleNameCheckbox" onchange="toggleMiddleName()" checked>
-    <label class="form-check-label" for="noMiddleNameCheckbox">
-      Candidate does not have a middle name
-    </label>
-  </div>
-</div>
+          <label class="form-label">Middle Name</label>
+          <input type="text" 
+                 class="form-control" 
+                 id="middleNameInput" 
+                 name="middle_name" 
+                 value="Jackson">
+          <div class="form-check mt-1">
+            <input class="form-check-input" type="checkbox" id="noMiddleNameCheckbox" onchange="toggleMiddleName()">
+            <label class="form-check-label" for="noMiddleNameCheckbox">
+              Candidate does not have a middle name
+            </label>
+          </div>
+        </div>
 
         <div class="col-md-3">
           <label class="form-label">Last Name</label>
-         <input type="text" class="form-control" id="lastNameInput" value="Jumio">
+          <input type="text" 
+                 class="form-control" 
+                 id="lastNameInput" 
+                 name="last_name" 
+                 value="Hardy Jackson">
         </div>
+
         <div class="col-md-3">
           <label class="form-label">Custom ID</label>
-        <input type="text" class="form-control" id="customIdInput" placeholder="Optional">
+          <input type="text" 
+                 class="form-control" 
+                 id="customIdInput" 
+                 name="custom_id" 
+                 placeholder="Optional">
         </div>
       </div>
 
       <div class="row mb-3">
         <div class="col-md-3">
           <label class="form-label">Date of Birth</label>
-         <input type="date" class="form-control" id="dobInput" value="1975-01-01">
+          <input type="date" 
+                 class="form-control" 
+                 id="dobInput" 
+                 name="dob" 
+                 value="2005-09-16">
         </div>
+
         <div class="col-md-3">
           <label class="form-label">ZIP Code</label>
-          <input type="text" class="form-control" value="00962">
+          <input type="text" 
+                 class="form-control" 
+                 name="zip_code" 
+                 value="00962">
         </div>
+
         <div class="col-md-3">
           <label class="form-label">Email</label>
-          <input type="email" class="form-control" value="jeremyzomar2@gmail.com">
+          <input type="email" 
+                 class="form-control" 
+                 name="email" 
+                 value="jeremyzomar2@gmail.com">
         </div>
+
         <div class="col-md-3">
           <label class="form-label">Phone</label>
-          <input type="text" class="form-control" value="(939) 775-2774">
+          <input type="text" 
+                 class="form-control" 
+                 name="phone" 
+                 value="(939) 775-2774">
         </div>
       </div>
 
@@ -165,7 +199,6 @@
     </form>
   </div>
 </div>
-
 
   <div class="card">
   <div class="card-body bg-light cursor-pointer" data-bs-toggle="collapse" data-bs-target="#documentsCollapse" aria-expanded="false" aria-controls="documentsCollapse">
@@ -180,8 +213,8 @@
     <div class="mb-3">
       <div class="mt-3">
         <div class="col-md-4">
-          <a href="https://rpa-test-invoice.s3.ap-southeast-2.amazonaws.com/JUMIOCHEKCER.jpg" target="_blank">
-  <img src="https://rpa-test-invoice.s3.ap-southeast-2.amazonaws.com/JUMIOCHEKCER.jpg" alt="License" class="img-fluid rounded border">
+          <a href="https://rpa-test-invoice.s3.ap-southeast-2.amazonaws.com/82e54f53_1758893435_11cab55275ba8d04bc69e1bf_driver_license.jpeg" target="_blank">
+  <img src="https://rpa-test-invoice.s3.ap-southeast-2.amazonaws.com/82e54f53_1758893435_11cab55275ba8d04bc69e1bf_driver_license.jpeg" alt="License" class="img-fluid rounded border">
 </a>
 
         </div>
@@ -195,21 +228,52 @@
   </div>
 </div>
 
+<!-- Driver's License Card -->
+<div class="card mt-3">
+  <div class="card-body">
+    <h5 class="card-title mb-3">Driver's License Information</h5>
+    <form>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="form-label">Driver's License Number</label>
+          <input type="text" 
+                 class="form-control" 
+                 name="driver_license_number" 
+                 placeholder="Enter DL Number"
+                 value="9000009">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">State</label>
+          <input type="text" 
+                 class="form-control" 
+                 name="driver_license_state" 
+                 placeholder="Enter 2-letter State Code (e.g., CA)"
+                 value="PR">
+        </div>
+      </div>
+      <div class="mb-3">
+        <button type="button" class="btn btn-success">Update DL Info</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
     </div>
     </div>
 
     <!-- Right Panel -->
     <div class="col-md-3 right-panel">
       <div class="section-title">Candidate Information</div>
-      <p><strong>First Name:</strong>Marie</p>
-      <p><strong>Middle Name:</strong></p>
-      <p><strong>Last Name:</strong>Jumio</p>
-      <p><strong>Date of Birth:</strong>Jan 01, 1975 (50 years old)</p>
+      <p><strong>First Name:</strong>Juana Del Pueblo</p>
+      <p><strong>Middle Name:</strong>Martinez</p>
+      <p><strong>Last Name:</strong>Rodriguez</p>
+      <p><strong>Date of Birth:</strong>Jan 15, 1975 (50 years old)</p>
       <p><strong>Location:</strong> Puerto Rico</p>
       <p><strong>Phone:</strong> (939) 775-2774</p>
       <p><strong>Email:</strong> jeremyzomar2@gmail.com</p>
       <p><strong>Driver’s License:</strong> <span id="driversLicense">9000009</span></p>
-      <p><strong>Created:</strong> <span id="dateCreated">Jul 29, 2025 4:32 AM CST</span></p>
+      <p><strong>Created:</strong> <span id="dateCreated">Aug 29, 2025 4:32 AM CST</span></p>
     </div>
   </div>
 </div>
