@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Real-Time Monitoring</title>
+
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+
+    .log-box {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 8px 12px;
+      height: 32px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      line-height: 24px;
+      flex-grow: 1;
+    }
+
+    .status-passed {
+      color: #198754;
+      font-weight: bold;
+    }
+
+    .status-failed {
+      color: #dc3545;
+      font-weight: bold;
+    }
+
+    .status-running {
+      color: #ffc107;
+      font-weight: bold;
+    }
+
+    .table td,
+    .table th {
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .view-logs-btn {
+      padding: 0 6px;
+      height: 32px;
+      font-weight: bold;
+      line-height: 1;
+    }
+  </style>
+</head>
+
+<body class="p-4">
+  <div class="container">
+    <h2 class="mb-4">Real-Time Monitoring</h2>
+
+    <div class="d-flex justify-content-end mb-3">
+      <button id="runBtn" class="btn btn-primary">
+        ▶ Run Test
+      </button>
+    </div>
+
+    <table class="table table-bordered align-middle">
+      <thead class="table-light">
+        <tr>
+          <th style="width: 18%">Process</th>
+          <th style="width: 12%">Status</th>
+          <th style="width: 15%">Last Run Time</th>
+          <th style="width: 12%">Accessible</th>
+          <th style="width: 12%">API</th>
+          <th style="width: 12%">Features</th>
+          <th>Live Logs</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="ninjaAI">
+          <td>Ninja AI Quicktype</td>
+          <td class="status">Idle</td>
+          <td class="last-run">—</td>
+          <td class="accessible">—</td>
+          <td class="api">—</td>
+          <td class="feature">—</td>
+          <td>
+            <div class="d-flex align-items-center">
+              <div class="log-box" id="ninjaLogs">—</div>
+              <button class="btn btn-sm btn-outline-secondary ms-2 view-logs-btn" data-target="ninjaLogs">…</button>
+            </div>
+          </td>
+        </tr>
+
+        <tr id="ninjaEditor">
+          <td>Ninja AI Editor</td>
+          <td class="status">Idle</td>
+          <td class="last-run">—</td>
+          <td class="accessible">—</td>
+          <td class="api">—</td>
+          <td class="feature">—</td>
+          <td>
+            <div class="d-flex align-items-center">
+              <div class="log-box" id="editorLogs">—</div>
+              <button class="btn btn-sm btn-outline-secondary ms-2 view-logs-btn" data-target="editorLogs">…</button>
+            </div>
+          </td>
+        </tr>
+
+        <tr id="ninjaTranslate">
+          <td>Ninja AI Translate</td>
+          <td class="status">Idle</td>
+          <td class="last-run">—</td>
+          <td class="accessible">—</td>
+          <td class="api">—</td>
+          <td class="feature">—</td>
+          <td>
+            <div class="d-flex align-items-center">
+              <div class="log-box" id="translateLogs">—</div>
+              <button class="btn btn-sm btn-outline-secondary ms-2 view-logs-btn" data-target="translateLogs">…</button>
+            </div>
+          </td>
+        </tr>
+
+        <tr id="aiqa">
+          <td>AIQA</td>
+          <td class="status">Idle</td>
+          <td class="last-run">—</td>
+          <td class="accessible">—</td>
+          <td class="api">—</td>
+          <td class="feature">—</td>
+          <td>
+            <div class="d-flex align-items-center">
+              <div class="log-box" id="aiqaLogs">—</div>
+              <button class="btn btn-sm btn-outline-secondary ms-2 view-logs-btn" data-target="aiqaLogs">…</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal for Full Logs -->
+  <div class="modal fade" id="logsModal" tabindex="-1" aria-labelledby="logsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="logsModalLabel">Full Logs</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <pre id="fullLogs" style="white-space: pre-wrap;">—</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase + Live Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+    const firebaseConfig = {
+      databaseURL:
+        "https://realtimemonitor-a7cb4-default-rtdb.asia-southeast1.firebasedatabase.app/",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const processes = ["ninjaAI", "ninjaEditor", "ninjaTranslate", "aiqa"];
+
+    processes.forEach((name) => {
+      const stateRef = ref(db, `${name}/status`);
+      const logsRef = ref(db, `${name}/logs`);
+      const accessibleRef = ref(db, `${name}/accessible`);
+      const apiRef = ref(db, `${name}/api`);
+      const featureRef = ref(db, `${name}/feature`);
+
+      const row = document.getElementById(name);
+      const logsBox = row.querySelector(".log-box");
+      const statusCell = row.querySelector(".status");
+      const timeCell = row.querySelector(".last-run");
+      const accessibleCell = row.querySelector(".accessible");
+      const apiCell = row.querySelector(".api");
+      const featureCell = row.querySelector(".feature");
+
+      // Status
+      onValue(stateRef, (snapshot) => {
+        const data = snapshot.val();
+        if (!data) return;
+        const { state, time } = data;
+        timeCell.textContent = time || "—";
+        statusCell.textContent = state ? state.charAt(0).toUpperCase() + state.slice(1) : "Idle";
+        statusCell.className = `status status-${state || "idle"}`;
+      });
+
+      // Accessible
+      onValue(accessibleRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data && data.state) {
+          if (["passed", "failed"].includes(data.state)) {
+            accessibleCell.textContent = data.state === "passed" ? "Passed" : "Failed";
+            accessibleCell.className = `accessible status-${data.state}`;
+          } else {
+            accessibleCell.textContent = "—";
+            accessibleCell.className = "accessible";
+          }
+        } else {
+          accessibleCell.textContent = "—";
+          accessibleCell.className = "accessible";
+        }
+      });
+
+      // Feature
+      onValue(featureRef, (snapshot) => {
+        const data = snapshot.val();
+        if (!data) return;
+        const { state } = data;
+        if (!state) return;
+        if (["passed", "failed"].includes(state)) {
+          featureCell.textContent = state === "passed" ? "Passed" : "Failed";
+          featureCell.className = `feature status-${state}`;
+        } else {
+          featureCell.textContent = state || "—";
+          featureCell.className = "feature status-running";
+        }
+      });
+
+      // API
+      onValue(apiRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data && data.state) {
+          if (["passed", "failed"].includes(data.state)) {
+            apiCell.textContent = data.state === "passed" ? "Passed" : "Failed";
+            apiCell.className = `api status-${data.state}`;
+          } else {
+            apiCell.textContent = "—";
+            apiCell.className = "api";
+          }
+        } else {
+          apiCell.textContent = "—";
+          apiCell.className = "api";
+        }
+      });
+
+      // Logs
+      onValue(logsRef, (snapshot) => {
+        const logs = snapshot.val();
+        logsBox.textContent = (logs && logs.message) || "—";
+      });
+    });
+
+    /********************************
+     * ▶ Run Playwright Button
+     ********************************/
+    const runBtn = document.getElementById("runBtn");
+    runBtn.addEventListener("click", async () => {
+      const feature = "ninjaAI"; // Only target Ninja AI Quicktype
+      const logsBox = document.querySelector(`#${feature} .log-box`);
+      logsBox.textContent = "Starting Playwright test...";
+
+      try {
+        const res = await fetch("http://192.168.100.100:4000/run-playwright", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ feature }),
+        });
+
+        const data = await res.json();
+        logsBox.textContent = data.success
+          ? "Test completed successfully"
+          : "Test failed: " + (data.error || "Unknown error");
+      } catch (err) {
+        logsBox.textContent = "❌ Connection error: " + err.message;
+      }
+    });
+
+    /********************************
+     * View Full Logs Buttons (Updated)
+     ********************************/
+    const logsModal = new bootstrap.Modal(document.getElementById("logsModal"));
+    const fullLogsEl = document.getElementById("fullLogs");
+
+ import { get, child } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+document.querySelectorAll(".view-logs-btn").forEach((btn) => {
+  btn.addEventListener("click", async () => {
+    const featureMap = {
+      ninjaLogs: "ninjaAI",
+      editorLogs: "ninjaEditor",
+      translateLogs: "ninjaTranslate",
+      aiqaLogs: "aiqa",
+    };
+    const targetId = btn.getAttribute("data-target");
+    const feature = featureMap[targetId];
+    if (!feature) return;
+
+    fullLogsEl.textContent = "Loading full logs...";
+
+    const fullLogsRef = ref(db, `${feature}/fullLogs`);
+    const snapshot = await get(fullLogsRef);
+    const logsObj = snapshot.val();
+
+    if (!logsObj) {
+      fullLogsEl.textContent = "No logs available";
+      return;
+    }
+
+const sortedRuns = Object.entries(logsObj).sort((a, b) => {
+  const timeA = new Date(a[1].time);
+  const timeB = new Date(b[1].time);
+  return timeB - timeA;
+});
+
+let output = "";
+for (const [runId, run] of sortedRuns) {
+  output += `🕒 ${run.time}\n`;
+  const messages = run.messages ? Object.values(run.messages) : [];
+  output += messages.join("\n") + "\n\n";
+}
+
+fullLogsEl.textContent = output || "No logs available";
+
+
+
+    logsModal.show();
+  });
+});
+
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
