@@ -265,7 +265,7 @@
       logsBox.textContent = "Starting Playwright test...";
 
       try {
-        const res = await fetch("http://192.168.100.100:4000/run-playwright", {
+        const res = await fetch("https://some-peas-hang.loca.lt/run-playwright", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ feature }),
